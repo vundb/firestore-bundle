@@ -1,6 +1,6 @@
 <?php
 
-namespace Vundb\VundbFirestoreBundle;
+namespace Vundb\FirestoreBundle;
 
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 
