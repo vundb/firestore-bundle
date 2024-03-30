@@ -6,7 +6,7 @@
         "php": ">=8.0",
         "google/cloud-firestore": "^1.42",
         "symfony/dependency-injection": "^6.0",
-        "symfony/http-kernel": "^7.0"
+        "symfony/http-kernel": "^6.0"
     },
     "license": "MIT",
     "autoload": {
