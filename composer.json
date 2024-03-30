@@ -1,0 +1,22 @@
+{
+    "name": "vundb/firestore-bundle",
+    "type": "symfony-bundle",
+    "version": "0.0.1",
+    "require": {
+        "php": ">=8.0",
+        "google/cloud-firestore": "^1.42",
+        "symfony/dependency-injection": "^6.0",
+        "symfony/http-kernel": "^7.0"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Vundb\\FirestoreBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Vundb\\FirestoreBundle\\Tests\\": "tests/"
+        }
+    }
+}
