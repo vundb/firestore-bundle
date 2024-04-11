@@ -30,5 +30,5 @@ php -m | grep pcov
 Run PHPUnit with code coverage
 
 ```bash
-./vendor/bin/phpunit --coverage-html report tests
+./vendor/bin/phpunit --coverage-html report
 ```
