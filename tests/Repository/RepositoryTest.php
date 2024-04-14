@@ -9,7 +9,7 @@ use Google\Cloud\Firestore\QuerySnapshot;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use stdClass;
-use Vundb\FirestoreBundle\Repository\AbstractRepository;
+use Vundb\FirestoreBundle\Repository\Repository;
 
 class AbstractRepositoryTest extends TestCase
 {
@@ -177,7 +177,7 @@ class AbstractRepositoryTest extends TestCase
     }
 }
 
-class TestRepository extends AbstractRepository
+class TestRepository extends Repository
 {
     public const COLLECTION = 'A7AF6CEC47CF';
 

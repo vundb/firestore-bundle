@@ -12,7 +12,7 @@ use Google\Cloud\Firestore\FirestoreClient;
 /**
  * @template TEntity
  */
-abstract class AbstractRepository
+abstract class Repository
 {
     protected FirestoreClient $client;
 
@@ -81,38 +81,22 @@ abstract class AbstractRepository
         return $this->hydrate($documents->rows()[0]);
     }
 
-    //     /**
-    //      * @return array<TEntity>
-    //      */
-    //     public function find(): array
-    //     {
-    //         $entities = [];
+    /**
+     * @param TEntity $entity
+     * @return TEntity
+     */
+    public function persist($entity)
+    {
+        //         /** @var AbstractEntity $entity */
+        //         if (0 === strlen($entity->getId())) {
+        //             $entity->setId(Uuid::v4());
+        //         }
 
-    //         $documents = $this->client->collection($this->collection())->documents();
+        //         $docRef = $this->client->collection($this->collection())->document($entity->getId());
+        //         $docRef->set($entity->toArray());
 
-    //         foreach ($documents as $document) {
-    //             $entities[] = $this->hydrateDocumentSnapshot($document);
-    //         }
-
-    //         return $entities;
-    //     }
-
-    //     /**
-    //      * @param TEntity $entity
-    //      * @return TEntity
-    //      */
-    //     public function persist($entity)
-    //     {
-    //         /** @var AbstractEntity $entity */
-    //         if (0 === strlen($entity->getId())) {
-    //             $entity->setId(Uuid::v4());
-    //         }
-
-    //         $docRef = $this->client->collection($this->collection())->document($entity->getId());
-    //         $docRef->set($entity->toArray());
-
-    //         return $entity;
-    //     }
+        //         return $entity;
+    }
 
     //     /**
     //      * @param string $id
