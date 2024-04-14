@@ -101,6 +101,57 @@ class AbstractRepositoryTest extends TestCase
         $this->assertNotNull($this->repository->findOneBy($filters));
     }
 
+    public function testFindOneById_withEmptyResult()
+    {
+        $id = random_bytes(8);
+        $documents = $this->getMockBuilder(QuerySnapshot::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['isEmpty'])
+            ->getMock();
+        $documents->expects($this->any())
+            ->method('isEmpty')
+            ->willReturn(true);
+
+        $this->collection->expects($this->once())
+            ->method('where')
+            ->with('id', '=', $id)
+            ->willReturn($this->collection);
+        $this->collection->expects($this->once())
+            ->method('documents')
+            ->willReturn($documents);
+
+        $this->assertNull($this->repository->findOneById($id));
+    }
+
+    public function testFindOneById_withResult()
+    {
+        $id = random_bytes(8);
+        $snapshots = [
+            $this->getMockBuilder(DocumentSnapshot::class)->disableOriginalConstructor()->getMock()
+        ];
+
+        $documents = $this->getMockBuilder(QuerySnapshot::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['isEmpty', 'rows'])
+            ->getMock();
+        $documents->expects($this->any())
+            ->method('isEmpty')
+            ->willReturn(false);
+        $documents->expects($this->any())
+            ->method('rows')
+            ->willReturn($snapshots);
+
+        $this->collection->expects($this->once())
+            ->method('where')
+            ->with('id', '=', $id)
+            ->willReturn($this->collection);
+        $this->collection->expects($this->once())
+            ->method('documents')
+            ->willReturn($documents);
+
+        $this->assertNotNull($this->repository->findOneById($id));
+    }
+
     ### PRIVATE ###
 
     private function setUpClientQuery(array $filters, mixed $documents)

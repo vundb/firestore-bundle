@@ -64,22 +64,22 @@ abstract class AbstractRepository
         return $this->hydrate($documents->rows()[0]);
     }
 
-    //     /**
-    //      * @param string $id
-    //      * @return ?TEntity
-    //      */
-    //     public function findOneById(string $id)
-    //     {
-    //         $documents = $this->client->collection($this->collection())
-    //             ->where('id', '=', $id)
-    //             ->documents();
+    /**
+     * @param string $id
+     * @return ?TEntity
+     */
+    public function findOneById(string $id)
+    {
+        $documents = $this->client()->collection($this->collection())
+            ->where('id', '=', $id)
+            ->documents();
 
-    //         if ($documents->isEmpty()) {
-    //             return null;
-    //         }
+        if ($documents->isEmpty()) {
+            return null;
+        }
 
-    //         return $this->hydrateDocumentSnapshot($documents->rows()[0]);
-    //     }
+        return $this->hydrate($documents->rows()[0]);
+    }
 
     //     /**
     //      * @return array<TEntity>
