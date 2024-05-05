@@ -1,7 +1,7 @@
 {
     "name": "vundb/firestore-bundle",
     "type": "symfony-bundle",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "require": {
         "php": ">=8.0",
         "google/cloud-firestore": "^1.42",
