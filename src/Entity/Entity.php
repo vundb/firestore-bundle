@@ -2,8 +2,6 @@
 
 namespace Vundb\FirestoreBundle\Entity;
 
-use DateTime;
-
 /**
  * @template TEntity
  */

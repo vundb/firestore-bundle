@@ -4,10 +4,7 @@ namespace Vundb\FirestoreBundle\Repository;
 
 use Google\Cloud\Firestore\DocumentSnapshot;
 use Google\Cloud\Firestore\FirestoreClient;
-
-// use App\Entity\AbstractEntity;
-// use Google\Cloud\Firestore\DocumentSnapshot;
-// use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * @template TEntity
@@ -87,25 +84,25 @@ abstract class Repository
      */
     public function persist($entity)
     {
-        //         /** @var AbstractEntity $entity */
-        //         if (0 === strlen($entity->getId())) {
-        //             $entity->setId(Uuid::v4());
-        //         }
+        /** @var AbstractEntity $entity */
+        if (0 === strlen($entity->getId())) {
+            $entity->setId(Uuid::v4());
+        }
 
-        //         $docRef = $this->client->collection($this->collection())->document($entity->getId());
-        //         $docRef->set($entity->toArray());
+        $docRef = $this->client->collection($this->collection())->document($entity->getId());
+        $docRef->set($entity->toArray());
 
-        //         return $entity;
+        return $entity;
     }
 
-    //     /**
-    //      * @param string $id
-    //      */
-    //     public function delete(string $id)
-    //     {
-    //         $docRef = $this->client->collection($this->collection())->document($id);
-    //         $docRef->delete();
-    //     }
+    /**
+     * @param string $id
+     */
+    public function delete(string $id)
+    {
+        $docRef = $this->client->collection($this->collection())->document($id);
+        $docRef->delete();
+    }
 
     /**
      * Returns the current collection path.

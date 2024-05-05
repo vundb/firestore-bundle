@@ -5,7 +5,8 @@
     "require": {
         "php": ">=8.0",
         "google/cloud-firestore": "^1.42",
-        "symfony/framework-bundle": "^6.0"
+        "symfony/framework-bundle": "^6.0",
+        "symfony/uid": "^7.0"
     },
     "license": "MIT",
     "autoload": {
