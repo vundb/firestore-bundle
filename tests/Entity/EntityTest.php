@@ -9,12 +9,12 @@ class EntityTest extends TestCase
 {
     public function testGetAndSetId()
     {
-        $id = random_bytes(8);
-
         $entity = new TestEntity();
         $this->assertSame('', $entity->getId());
 
-        $entity->setId($id);
+        $id = random_bytes(8);
+        $entity = ($entity = new TestEntity())
+            ->setId($id);
         $this->assertSame($id, $entity->getId());
     }
 
@@ -23,8 +23,6 @@ class EntityTest extends TestCase
         $id = random_bytes(8);
         $entity = (new TestEntity())
             ->setId($id);
-
-        var_dump($entity);
 
         $this->assertSame([
             'id' => $id
@@ -68,9 +66,9 @@ class TestEntity extends Entity
  */
 class TestEntityWithProperties extends Entity
 {
-    private string $name;
-    private int $sequence;
-    private array $roles;
+    protected string $name;
+    protected int $sequence;
+    protected array $roles;
 
     public function setName(string $value): self
     {

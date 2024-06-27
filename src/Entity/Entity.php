@@ -2,57 +2,54 @@
 
 namespace Vundb\FirestoreBundle\Entity;
 
-use Symfony\Component\PropertyAccess\PropertyAccess;
-
 /**
  * @template T
+ * @method string getId()
+ * @method T setId(string $value)
  */
 abstract class Entity
 {
-    private string $id = '';
-
-    /**
-     * @return string
-     */
-    public function getId(): string
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param string $id
-     * @return T
-     */
-    public function setId(string $id): self
-    {
-        $this->id = $id;
-        return $this;
-    }
+    protected string $id = '';
 
     /**
      * @return array
      */
     public function toArray(): array
     {
-        $propertyAccessor = PropertyAccess::createPropertyAccessor();
         $array = [];
         $reflectionClass = new \ReflectionClass($this);
 
-        while ($reflectionClass) {
-            $properties = $reflectionClass->getProperties(\ReflectionProperty::IS_PRIVATE | \ReflectionProperty::IS_PROTECTED | \ReflectionProperty::IS_PUBLIC);
-
-            foreach ($properties as $property) {
-                $name = $property->getName();
-                $getter = 'get' . ucfirst($name);
-
-                if (method_exists($this, $getter)) {
-                    $array[$name] = $propertyAccessor->getValue($this, $name);
-                }
-            }
-
-            $reflectionClass = $reflectionClass->getParentClass();
+        foreach ($reflectionClass->getProperties() as $property) {
+            $propertyName = $property->getName();
+            $array[$propertyName] = $this->$propertyName;
         }
 
         return $array;
+    }
+
+    public function __call($method, $arguments)
+    {
+        if (str_starts_with($method, 'get')) {
+            $propertyName = lcfirst(substr($method, 3));
+
+            if (property_exists($this, $propertyName)) {
+                return $this->$propertyName;
+            } else {
+                throw new \BadMethodCallException('Call to undefined getter method ' . static::class . '::' . $method . '()');
+            }
+        } elseif (str_starts_with($method, 'set')) {
+            $propertyName = lcfirst(substr($method, 3));
+
+            if (property_exists($this, $propertyName)) {
+                $this->$propertyName = $arguments[0] ?? null;
+                return $this;
+            } else {
+                throw new \BadMethodCallException('Call to undefined setter method ' . static::class . '::' . $method . '()');
+            }
+        } elseif (method_exists($this, $method)) {
+            return $this->$method(...$arguments);
+        } else {
+            throw new \BadMethodCallException('Call to undefined method ' . static::class . '::' . $method . '()');
+        }
     }
 }
