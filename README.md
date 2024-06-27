@@ -27,6 +27,11 @@ Ensure pcov extension is enabled
 php -m | grep pcov
 ```
 
+Ensure coverage mode is active
+
+```bash
+export XDEBUG_MODE=coverage
+```
 Run PHPUnit with code coverage
 
 ```bash

@@ -2,8 +2,10 @@
 
 namespace Vundb\FirestoreBundle\Entity;
 
+use Symfony\Component\PropertyAccess\PropertyAccess;
+
 /**
- * @template TEntity
+ * @template T
  */
 abstract class Entity
 {
@@ -19,7 +21,7 @@ abstract class Entity
 
     /**
      * @param string $id
-     * @return TEntity
+     * @return T
      */
     public function setId(string $id): self
     {
@@ -27,10 +29,30 @@ abstract class Entity
         return $this;
     }
 
+    /**
+     * @return array
+     */
     public function toArray(): array
     {
-        return [
-            'id' => $this->id
-        ];
+        $propertyAccessor = PropertyAccess::createPropertyAccessor();
+        $array = [];
+        $reflectionClass = new \ReflectionClass($this);
+
+        while ($reflectionClass) {
+            $properties = $reflectionClass->getProperties(\ReflectionProperty::IS_PRIVATE | \ReflectionProperty::IS_PROTECTED | \ReflectionProperty::IS_PUBLIC);
+
+            foreach ($properties as $property) {
+                $name = $property->getName();
+                $getter = 'get' . ucfirst($name);
+
+                if (method_exists($this, $getter)) {
+                    $array[$name] = $propertyAccessor->getValue($this, $name);
+                }
+            }
+
+            $reflectionClass = $reflectionClass->getParentClass();
+        }
+
+        return $array;
     }
 }
