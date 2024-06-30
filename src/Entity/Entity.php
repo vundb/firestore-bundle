@@ -29,7 +29,9 @@ abstract class Entity
 
     public function __call($method, $arguments)
     {
-        if (str_starts_with($method, 'get')) {
+        if (method_exists($this, $method)) {
+            return $this->$method(...$arguments);
+        } elseif (str_starts_with($method, 'get')) {
             $propertyName = lcfirst(substr($method, 3));
 
             if (property_exists($this, $propertyName)) {
@@ -46,8 +48,6 @@ abstract class Entity
             } else {
                 throw new \BadMethodCallException('Call to undefined setter method ' . static::class . '::' . $method . '()');
             }
-        } elseif (method_exists($this, $method)) {
-            return $this->$method(...$arguments);
         } else {
             throw new \BadMethodCallException('Call to undefined method ' . static::class . '::' . $method . '()');
         }
