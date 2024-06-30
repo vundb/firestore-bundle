@@ -89,8 +89,9 @@ abstract class Repository
             $entity->setId(Uuid::v4());
         }
 
-        $docRef = $this->client->collection($this->collection())->document($entity->getId());
-        $docRef->set($entity->toArray());
+        $this->client()->collection($this->collection())
+            ->document($entity->getId())
+            ->set($entity->toArray());
 
         return $entity;
     }

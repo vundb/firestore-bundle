@@ -3,12 +3,15 @@
 namespace Vundb\FirestoreBundle\Tests\Repository;
 
 use Google\Cloud\Firestore\CollectionReference;
+use Google\Cloud\Firestore\DocumentReference;
 use Google\Cloud\Firestore\DocumentSnapshot;
 use Google\Cloud\Firestore\FirestoreClient;
 use Google\Cloud\Firestore\QuerySnapshot;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use stdClass;
+use Symfony\Component\Uid\Uuid;
+use Vundb\FirestoreBundle\Entity\Entity;
 use Vundb\FirestoreBundle\Repository\Repository;
 
 class AbstractRepositoryTest extends TestCase
@@ -21,7 +24,7 @@ class AbstractRepositoryTest extends TestCase
     {
         $this->collection = $this->getMockBuilder(CollectionReference::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['where', 'limit', 'documents'])
+            ->onlyMethods(['where', 'limit', 'documents', 'document'])
             ->getMock();
         $this->repository = $this->getMockBuilder(TestRepository::class)
             ->disableOriginalConstructor()
@@ -152,6 +155,46 @@ class AbstractRepositoryTest extends TestCase
         $this->assertNotNull($this->repository->findOneById($id));
     }
 
+    public function testPersist()
+    {
+        $entity = new TestEntity();
+
+        $document = $this->getMockBuilder(DocumentReference::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['set'])
+            ->getMock();
+        $document->expects($this->once())
+            ->method('set')
+            ->withAnyParameters()
+            ->willReturn($entity);
+        $this->setUpCollectionReturningDocument($document);
+
+        $this->assertSame($this->repository->persist($entity), $entity);
+        $this->assertEquals(36, strlen($entity->getId()));
+    }
+
+    public function testPersist_withEntityHavingId()
+    {
+        $entity = (new TestEntity())
+            ->setId(Uuid::v4())
+            ->setName('Hello Wolrd');
+
+        $document = $this->getMockBuilder(DocumentReference::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['set'])
+            ->getMock();
+        $document->expects($this->once())
+            ->method('set')
+            ->with($this->callback(function ($arg) use ($entity) {
+                return is_array($arg) && array_key_exists('id', $arg) && $arg['id'] === $entity->getId();
+            }))
+            ->willReturn($entity);
+        $this->setUpCollectionReturningDocument($document);
+
+        $this->assertSame($this->repository->persist($entity), $entity);
+        $this->assertEquals(36, strlen($entity->getId()));
+    }
+
     ### PRIVATE ###
 
     private function setUpClientQuery(array $filters, mixed $documents)
@@ -175,6 +218,16 @@ class AbstractRepositoryTest extends TestCase
             ->method('documents')
             ->willReturn($documents);
     }
+
+    private function setUpCollectionReturningDocument(mixed $document)
+    {
+        $this->collection->expects($this->once())
+            ->method('document')
+            ->with($this->callback(function ($arg) {
+                return strlen($arg) === 36;
+            }))
+            ->willReturn($document);
+    }
 }
 
 class TestRepository extends Repository
@@ -190,4 +243,9 @@ class TestRepository extends Repository
     {
         return new stdClass();
     }
+}
+
+class TestEntity extends Entity
+{
+    protected string $name = '';
 }
