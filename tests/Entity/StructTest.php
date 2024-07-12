@@ -79,6 +79,27 @@ class StructTest extends TestCase
         $this->expectException(\BadMethodCallException::class);
         $entity->undefinedMethodCall();
     }
+
+    public function testSerialization()
+    {
+        $id = random_bytes(8);
+        $name = random_bytes(8);
+        $created = new \DateTime();
+        $entity = (new SerializedStruct())
+            ->setId($id)
+            ->setName($name)
+            ->setCreated($created);
+
+        $this->assertArrayIsEqualToArrayOnlyConsideringListOfKeys(
+            [
+                'id' => $id,
+                'name' => $name,
+                'created' => $created
+            ],
+            $entity->jsonSerialize(),
+            ['id', 'name', 'created']
+        );
+    }
 }
 
 /**
@@ -107,4 +128,19 @@ class TestStruct extends Struct
     {
         return ['ok'];
     }
+}
+
+/**
+ * @method string getId()
+ * @method string getName()
+ * @method ?\DateTime getCreated()
+ * @method self setId(string $id)
+ * @method self setName(string $name)
+ * @method self setCreated(\DateTime $created)
+ */
+class SerializedStruct extends Struct
+{
+    protected string $id = '';
+    protected string $name = '';
+    protected ?\DateTime $created = null;
 }
