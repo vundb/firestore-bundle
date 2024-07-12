@@ -12,18 +12,11 @@ abstract class Entity extends Struct
     protected string $id = '';
 
     /**
+     * @deprecated Use the Struct::jsonSerialize() method instead.
      * @return array
      */
     public function toArray(): array
     {
-        $array = [];
-        $reflectionClass = new \ReflectionClass($this);
-
-        foreach ($reflectionClass->getProperties() as $property) {
-            $propertyName = $property->getName();
-            $array[$propertyName] = $this->$propertyName;
-        }
-
-        return $array;
+        return $this->jsonSerialize();
     }
 }

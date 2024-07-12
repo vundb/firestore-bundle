@@ -2,7 +2,7 @@
 
 namespace Vundb\FirestoreBundle\Entity;
 
-abstract class Struct
+abstract class Struct implements \JsonSerializable
 {
     public function __call($method, $arguments)
     {
@@ -28,5 +28,18 @@ abstract class Struct
         } else {
             throw new \BadMethodCallException('Call to undefined method ' . static::class . '::' . $method . '()');
         }
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        $array = [];
+        $reflectionClass = new \ReflectionClass($this);
+
+        foreach ($reflectionClass->getProperties() as $property) {
+            $propertyName = $property->getName();
+            $array[$propertyName] = $this->$propertyName;
+        }
+
+        return $array;
     }
 }
