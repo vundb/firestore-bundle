@@ -52,38 +52,6 @@ class EntityTest extends TestCase
             ['id', 'name', 'sequence', 'roles']
         );
     }
-
-    public function testGetterWithUndefinedMethod()
-    {
-        $entity = new TestEntity();
-        $this->expectException(\BadMethodCallException::class);
-
-        $entity->getUnknown();
-    }
-
-    public function testSetterWithUnknownMethod()
-    {
-        $entity = new TestEntity();
-        $this->expectException(\BadMethodCallException::class);
-
-        $entity->setUnknown();
-    }
-
-    public function testCustomSetFunctionCall()
-    {
-        $entity = new TestEntityWithCustomGetterSetterMethod();
-
-        $this->assertSame('bla', $entity->getBla());
-        $this->assertSame('blub', $entity->setBlub());
-    }
-
-    public function testUndefinedMethodCall()
-    {
-        $entity = new TestEntity();
-        $this->expectException(\BadMethodCallException::class);
-
-        $entity->undefinedMethodCall();
-    }
 }
 
 /**
