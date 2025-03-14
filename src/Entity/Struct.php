@@ -37,7 +37,11 @@ abstract class Struct implements \JsonSerializable
 
         foreach ($reflectionClass->getProperties() as $property) {
             $propertyName = $property->getName();
-            $array[$propertyName] = $this->$propertyName;
+            if ($this->$propertyName instanceof Struct) {
+                $array[$propertyName] = $this->$propertyName->jsonSerialize();
+            } else {
+                $array[$propertyName] = $this->$propertyName;
+            }
         }
 
         return $array;

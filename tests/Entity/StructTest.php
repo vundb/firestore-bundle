@@ -100,6 +100,27 @@ class StructTest extends TestCase
             ['id', 'name', 'created']
         );
     }
+
+    public function testNestedSerialization()
+    {
+        $id = random_bytes(8);
+        $entity = (new NestedSerializedStruct())
+            ->setId($id)
+            ->setData(new SerializedStruct());
+
+        $this->assertArrayIsEqualToArrayOnlyConsideringListOfKeys(
+            [
+                'id' => $id,
+                'data' => [
+                    'id' => '',
+                    'name' => '',
+                    'created' => null
+                ]
+            ],
+            $entity->jsonSerialize(),
+            ['id', 'data']
+        );
+    }
 }
 
 /**
@@ -143,4 +164,16 @@ class SerializedStruct extends Struct
     protected string $id = '';
     protected string $name = '';
     protected ?\DateTime $created = null;
+}
+
+/**
+ * @method string getId()
+ * @method self setId(string $value)
+ * @method ?SerializedStruct getData()
+ * @method self setData(SerializedStruct $value)
+ */
+class NestedSerializedStruct extends Struct
+{
+    protected string $id = '';
+    protected ?SerializedStruct $data = null;
 }
